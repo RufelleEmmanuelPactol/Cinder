@@ -23,7 +23,6 @@ namespace cinder {
         user_args = "";
         auto * fw = new dive::FileWriter("out.cpp");
         delete fw;
-        bool empty = false;
         std::string buffer;
         int counter = 0;
         while (true){
