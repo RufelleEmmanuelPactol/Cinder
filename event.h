@@ -8,7 +8,6 @@
 #include <iostream>
 #include <vector>
 #include "../DiveDB-/CLI/src/divefile.h"
-
 namespace cinder {
     std::string init_s = "#include <iostream>\n#include <cstdio>\n #include <memory>\n"
                          "#include <cmath>\n #include <functional>\n #define function(x, y, ...) std::function<y(__VA_ARGS__)> x = [&]\n"
@@ -19,6 +18,7 @@ namespace cinder {
     std::string main_function = "\nusing namespace std;\nint main (){\n";
     std::string user_args;
     std::string init_e = "\n}\n";
+    std::string defines;
     void event_loop (){
         user_args = "";
         auto * fw = new dive::FileWriter("out.cpp");
@@ -30,6 +30,10 @@ namespace cinder {
             std::getline(std::cin, buffer);
             if (buffer == "-q"){
                 exit(1);
+            }
+            if (buffer.find("#include ") != std::string::npos){
+                defines.append(buffer +  "\n");
+                continue;
             }
             if (buffer.empty()){
                 counter++;
@@ -45,7 +49,7 @@ namespace cinder {
         fw = new dive::FileWriter("out.cpp");
         fw->writeLine(" ");
         fw->flush();
-        fw->writeLine(init_s + main_function + user_args + init_e);
+        fw->writeLine(init_s + defines + main_function + user_args + init_e);
         fw->flush();
         delete fw;
         if (!user_args.empty()){
